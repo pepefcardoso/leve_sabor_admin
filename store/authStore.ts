@@ -1,4 +1,5 @@
-import { User } from "typings/user";
+
+import { User } from "@/typings/user";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 

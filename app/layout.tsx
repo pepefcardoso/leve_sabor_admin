@@ -1,13 +1,15 @@
-import './globals.css'
+import "./globals.css";
 import { Inter } from "next/font/google";
 import clsx from "clsx";
 import { Metadata } from "next";
-import { bgColors } from '@/constants/colors';
+import { bgColors } from "@/constants/colors";
+import Sidebar from "@/components/Sidebar";
+// import AuthGuard from "@/components/AuthGuard";
 
 export const metadata: Metadata = {
-  title: 'LeveSabor Admin',
-  description: 'Administração do LeveSabor',
-}
+  title: "LeveSabor Admin",
+  description: "Administração do LeveSabor",
+};
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,9 +30,12 @@ export default function RootLayout({
           "flex flex-col min-h-screen"
         )}
       >
-        <main>
-          <div className="mx-auto h-full">{children}</div>
+        {/* <AuthGuard> */}
+        <main className="flex h-screen">
+          <Sidebar />
+          <div className="flex-1 p-4 overflow-auto">{children}</div>
         </main>
+        {/* </AuthGuard> */}
       </body>
     </html>
   );

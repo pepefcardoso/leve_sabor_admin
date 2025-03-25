@@ -12,14 +12,14 @@ export const AuthService = {
       const token = response.data.token;
       if (!token) throw new Error("No authentication token received");
 
-      localStorage.setItem("authToken", token);
+      localStorage.setItem("leve_sabor_admin_auth_token", token);
       apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
       const user = await getCurrentUser();
       useAuthStore.getState().login(token, user);
       return true;
     } catch (error: unknown) {
-      localStorage.removeItem("authToken");
+      localStorage.removeItem("leve_sabor_admin_auth_token");
       delete apiClient.defaults.headers.common["Authorization"];
 
       let errorMessage =
@@ -47,7 +47,7 @@ export const AuthService = {
   async logout(): Promise<boolean> {
     try {
       await apiClient.post("/logout");
-      localStorage.removeItem("authToken");
+      localStorage.removeItem("leve_sabor_admin_auth_token");
       delete apiClient.defaults.headers.common["Authorization"];
       useAuthStore.getState().logout();
       return true;

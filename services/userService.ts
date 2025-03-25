@@ -1,4 +1,5 @@
-import { PaginationParams, PaginationResponse } from "typings/pagination";
+
+import { PaginationParams, PaginationResponse } from "@/typings/pagination";
 import { User } from "../typings/user";
 import apiClient from "./apiClient";
 

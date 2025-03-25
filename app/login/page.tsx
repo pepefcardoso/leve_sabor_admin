@@ -3,11 +3,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
-import useAuthStore from "store/authStore";
-import { AuthService } from "services/authService";
-import { Typography } from "constants/typography";
+import useAuthStore from "@/store/authStore";
+import { AuthService } from "@/services/authService";
+import { Typography } from "@/constants/typography";
+import { txtColors } from "@/constants/colors";
+import CustomTextInput, { InputType } from "@/components/Inputs/CustomTextInput";
+import FilledButton from "@/components/Buttons/FilledButton";
 
-export default function LoginPage() {
+export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -55,24 +58,30 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="w-full max-w-lg p-6 sm:p-8 space-y-8 bg-primary rounded-xl shadow-2xl mx-4">
-        <div className="text-left">
-          <h1 className={clsx(Typography.Display)}>Bem-vindo!</h1>
+      <div className="w-full max-w-xl p-6 space-y-8 bg-white rounded-xl shadow-2xl">
+        <div className="text-left space-y-2">
+          <h1 className={Typography.Display}>Bem-vindo!</h1>
+          <p className={clsx(Typography.Body, txtColors.gray500)}>
+            Faça login para acessar a aplicação.
+          </p>
         </div>
+
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="space-y-4">
-            <input
+          <CustomTextInput
               id="email"
-              type="email"
+              type={InputType.Email}
+              label="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               disabled={loading}
               autoComplete="email"
             />
-            <input
+            <CustomTextInput
               id="password"
-              type="password"
+              type={InputType.Password}
+              label="Senha"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -80,9 +89,12 @@ export default function LoginPage() {
               autoComplete="current-password"
             />
           </div>
-          <button disabled={loading} className="w-full" type="submit">
-            Entrar
-          </button>
+          <FilledButton
+            text="Entrar"
+            disabled={loading}
+            className="w-full"
+            type="submit"
+          />
         </form>
       </div>
     </div>
