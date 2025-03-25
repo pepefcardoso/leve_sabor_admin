@@ -1,9 +1,10 @@
-@config "../tailwind.config.ts";
-@import "tailwindcss/preflight";
-@tailwind utilities;
+@import "tailwindcss";
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@theme {
+    --color-primary: #A94A4A;
+    --color-secondary: #F4D793;
+    --color-tertiary: #889E73;
+    --color-background: #FFF6DA;
+
+    --font-sans: 'Inter', sans-serif;
 }

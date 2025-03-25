@@ -1,8 +1,8 @@
-import { bgColors } from "constants/colors";
 import './globals.css'
 import { Inter } from "next/font/google";
 import clsx from "clsx";
 import { Metadata } from "next";
+import { bgColors } from '@/constants/colors';
 
 export const metadata: Metadata = {
   title: 'LeveSabor Admin',
@@ -11,7 +11,6 @@ export const metadata: Metadata = {
 
 const inter = Inter({
   subsets: ["latin"],
-  display: "swap",
   variable: "--font-inter",
 });
 
@@ -25,7 +24,7 @@ export default function RootLayout({
       <body
         className={clsx(
           inter.variable,
-          bgColors.primary,
+          bgColors.background,
           "flex flex-col min-h-screen"
         )}
       >
