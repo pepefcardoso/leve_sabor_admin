@@ -1,5 +1,5 @@
 "use client";
-import { HOME_LINKS } from "@/constants";
+import { NAVIGATION_LINKS } from "@/constants";
 import { Typography } from "@/constants/typography";
 import clsx from "clsx";
 import Link from "next/link";
@@ -8,7 +8,7 @@ export default function HomePage() {
   return (
     <div className="p-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {HOME_LINKS.map((item, index) => {
+        {NAVIGATION_LINKS.map((item, index) => {
           const Icon = item.icon;
           return (
             <Link key={index} href={item.href}>

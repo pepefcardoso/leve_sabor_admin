@@ -1,26 +1,18 @@
-
-import { User } from "@/typings/user";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface AuthState {
-  token: string | null;
-  user: User | null;
-  login: (token: string, user: User) => void;
-  logout: () => void;
+  isAuthenticated: boolean;
+  setAuthenticated: (auth: boolean) => void;
 }
 
-const useAuthStore = create<AuthState, [["zustand/persist", AuthState]]>(
+const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      token: null,
-      user: null,
-      login: (token, user) => set({ token, user }),
-      logout: () => set({ token: null, user: null }),
+      isAuthenticated: false,
+      setAuthenticated: (auth) => set({ isAuthenticated: auth }),
     }),
-    {
-      name: "authStore",
-    }
+    { name: "authStore" }
   )
 );
 

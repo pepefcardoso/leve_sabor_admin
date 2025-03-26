@@ -1,56 +1,35 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
-import useAuthStore from "@/store/authStore";
 import { AuthService } from "@/services/authService";
 import { Typography } from "@/constants/typography";
 import { txtColors } from "@/constants/colors";
 import CustomTextInput, { InputType } from "@/components/Inputs/CustomTextInput";
 import FilledButton from "@/components/Buttons/FilledButton";
+import useAuthStore from "@/store/authStore";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const token = useAuthStore((state) => state.token);
-
-  interface ErrorResponse {
-    response?: {
-      data?: {
-        message?: string;
-      };
-    };
-    request?: unknown;
-  }
-
-  const extractErrorMessage = (err: unknown): string => {
-    if (err instanceof Error) return err.message;
-    const error = err as ErrorResponse;
-    if (error.response?.data?.message) return error.response.data.message;
-    if (error.request)
-      return "Erro de rede. Verifique sua conexão com a internet.";
-    return "Falha no login. Verifique suas credenciais.";
-  };
-
-  useEffect(() => {
-    if (token) router.push("/");
-  }, [token, router]);
+  const { setAuthenticated } = useAuthStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (loading) return;
+
     setLoading(true);
     try {
       const success = await AuthService.login(email, password);
       if (success) {
-        router.push("/");
+        setAuthenticated(true);
+        router.replace("/");
       }
-    } catch (err: unknown) {
-      const errorMessage = extractErrorMessage(err);
-      console.log(errorMessage);
+    } catch (error) {
+      console.error("Login error:", error);
     } finally {
       setLoading(false);
     }
@@ -68,7 +47,7 @@ export default function Page() {
 
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="space-y-4">
-          <CustomTextInput
+            <CustomTextInput
               id="email"
               type={InputType.Email}
               label="Email"

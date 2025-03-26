@@ -4,7 +4,8 @@ import clsx from "clsx";
 import { Metadata } from "next";
 import { bgColors } from "@/constants/colors";
 import Sidebar from "@/components/Sidebar";
-// import AuthGuard from "@/components/AuthGuard";
+import HydrationZustand from "@/store/hydrationZustand";
+import AuthGuard from "@/components/AuthGuard";
 
 export const metadata: Metadata = {
   title: "LeveSabor Admin",
@@ -30,12 +31,14 @@ export default function RootLayout({
           "flex flex-col min-h-screen"
         )}
       >
-        {/* <AuthGuard> */}
-        <main className="flex h-screen">
-          <Sidebar />
-          <div className="flex-1 p-4 overflow-auto">{children}</div>
-        </main>
-        {/* </AuthGuard> */}
+        <HydrationZustand>
+          <AuthGuard>
+            <main className="flex h-screen">
+              <Sidebar />
+              <div className="flex-1 p-4 overflow-auto">{children}</div>
+            </main>
+          </AuthGuard>
+        </HydrationZustand>
       </body>
     </html>
   );

@@ -1,58 +1,45 @@
-import useAuthStore from "../store/authStore";
-import apiClient from "./apiClient";
-import { getCurrentUser } from "./userService";
+// import useAuthStore from "../store/authStore";
+// import { getCurrentUser } from "./userService";
 
 export const AuthService = {
   async login(email: string, password: string): Promise<boolean> {
     try {
-      const response = await apiClient.post<{ token: string }>("/login", {
-        email,
-        password,
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
-      const token = response.data.token;
-      if (!token) throw new Error("No authentication token received");
 
-      localStorage.setItem("leve_sabor_admin_auth_token", token);
-      apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Falha no login");
+      }
 
-      const user = await getCurrentUser();
-      useAuthStore.getState().login(token, user);
+      // const user = await getCurrentUser();
+      // useAuthStore.getState().login("", user);
       return true;
     } catch (error: unknown) {
-      localStorage.removeItem("leve_sabor_admin_auth_token");
-      delete apiClient.defaults.headers.common["Authorization"];
-
-      let errorMessage =
-        "Por favor, confira suas credenciais e tente novamente.";
-
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      } else if (
-        typeof error === "object" &&
-        error !== null &&
-        "response" in error
-      ) {
-        const errorResponse = error as {
-          response: { data?: { errors?: string[]; message?: string } };
-        };
-        errorMessage =
-          errorResponse.response.data?.errors?.join(", ") ||
-          errorResponse.response.data?.message ||
-          errorMessage;
-      }
+      // useAuthStore.getState().logout();
+      let errorMessage = "Please check your credentials and try again.";
+      if (error instanceof Error) errorMessage = error.message;
       throw new Error(errorMessage);
     }
   },
 
   async logout(): Promise<boolean> {
     try {
-      await apiClient.post("/logout");
-      localStorage.removeItem("leve_sabor_admin_auth_token");
-      delete apiClient.defaults.headers.common["Authorization"];
-      useAuthStore.getState().logout();
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        throw new Error("Falha ao comunicar com o servidor");
+      }
+
       return true;
-    } catch {
-      throw new Error("O logout falhou. Por favor, tente novamente.");
+    } catch (error) {
+      console.error("Erro durante logout:", error);
+      throw new Error("Não foi possível completar o logout. Tente novamente.");
     }
   },
 };
