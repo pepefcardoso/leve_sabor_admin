@@ -8,10 +8,12 @@ export const bgColors = {
   background: "bg-background",
   white: "bg-white",
   black: "bg-black",
+  transparent: "bg-transparent",
 } as const;
 
 export const txtColors = {
   gray500: "text-gray-500",
+  gray700: "text-gray-700",
   white: "text-white",
   black: "text-black",
 } as const;

@@ -35,7 +35,7 @@ export const Typography = {
   Quote: clsx(fontSizes.sm, fontWeights.light, `md:${fontSizes.base}`),
 
   // Interactive Elements
-  Button: clsx(fontSizes.base, fontWeights.bold, `md:${fontSizes.lg}`),
+  Button: clsx(fontSizes.base, fontWeights.normal, `md:${fontSizes.lg}`),
   Label: clsx(fontSizes.sm, fontWeights.normal, `md:${fontSizes.base}`),
   Tag: clsx(fontSizes.sm, fontWeights.bold, `md:${fontSizes.base}`),
   Helper: clsx(fontSizes.sm, fontWeights.light, `md:${fontSizes.base}`),
