@@ -10,6 +10,7 @@ const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       isAuthenticated: false,
+      token: undefined,
       setAuthenticated: (auth) => set({ isAuthenticated: auth }),
     }),
     { name: "authStore" }

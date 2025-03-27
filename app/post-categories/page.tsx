@@ -8,6 +8,7 @@ import { deletePostCategory, getPostCategories } from '@/services/postCategorySe
 import FilledButton from '@/components/Buttons/FilledButton';
 import { ConfirmationModal } from '@/components/Modals/ConfirmationModal';
 import { Typography } from '@/constants/typography';
+import { ErrorResponse } from '@/typings/pagination';
 
 export default function Page() {
     const router = useRouter();
@@ -64,8 +65,13 @@ export default function Page() {
             await deletePostCategory(selectedCategory.id);
             await fetchCategories();
             setShowDeleteModal(false);
-        } catch (error) {
-            console.error('Erro ao excluir categoria:', error);
+        } catch (error: unknown) {
+            if (error instanceof Error && 'response' in error) {
+                console.error("Erro ao excluir categoria:", (error as ErrorResponse).response?.data || error.message);
+            } else {
+                console.error("Erro desconhecido ao excluir categoria:", error);
+            }
+            setShowDeleteModal(false);
         }
     };
 

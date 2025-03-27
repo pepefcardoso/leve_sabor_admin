@@ -1,5 +1,5 @@
 import axios from "axios";
-import useAuthStore from "../store/authStore";
+import { AuthService } from "./authService";
 
 const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api",
@@ -8,8 +8,19 @@ const apiClient = axios.create({
   },
 });
 
-apiClient.interceptors.request.use((config) => {
-  const { token } = useAuthStore.getState();
+const getToken = async (): Promise<string | null> => {
+  try {
+    const response = await fetch("/api/auth/getToken");
+    const data = await response.json();
+    return data.token;
+  } catch (error) {
+    console.error("Erro ao buscar token:", error);
+    return null;
+  }
+};
+
+apiClient.interceptors.request.use(async (config) => {
+  const token = await getToken();
 
   if (config.data instanceof FormData) {
     config.headers["Content-Type"] = "multipart/form-data";
@@ -33,9 +44,7 @@ apiClient.interceptors.response.use(
 
     if (isUnauthorized && !isLoginRequest && !originalRequest._retry) {
       originalRequest._retry = true;
-
-      useAuthStore.getState().logout();
-
+      AuthService.logout();
       window.location.href = "/login";
     }
 

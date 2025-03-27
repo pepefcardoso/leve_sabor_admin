@@ -1,4 +1,8 @@
-import { PaginationParams, PaginationResponse } from "@/typings/pagination";
+import {
+  ErrorResponse,
+  PaginationParams,
+  PaginationResponse,
+} from "@/typings/pagination";
 import { PostCategory } from "@/typings/post";
 import apiClient from "./apiClient";
 
@@ -73,7 +77,19 @@ export const deletePostCategory = async (id: string): Promise<void> => {
   try {
     const response = await apiClient.delete<void>(`/post-categories/${id}`);
     return response.data;
-  } catch {
-    throw new Error("Falha ao deletar categoria de postagem");
+  } catch (error: unknown) {
+    if (error instanceof Error && "response" in error) {
+      console.error(
+        "Erro ao deletar categoria:",
+        (error as ErrorResponse).response?.data || error.message
+      );
+      throw new Error(
+        (error as ErrorResponse).response?.data?.message ||
+          "Falha ao deletar categoria de postagem"
+      );
+    } else {
+      console.error("Erro desconhecido:", error);
+      throw new Error("Falha ao deletar categoria de postagem");
+    }
   }
 };

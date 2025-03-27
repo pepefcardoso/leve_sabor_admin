@@ -14,3 +14,12 @@ export type ApiResponse<T> = {
   data: T;
   message?: string;
 };
+
+export interface ErrorResponse {
+  response?: {
+    data?: {
+      message: string;
+    };
+  };
+  message: string;
+}

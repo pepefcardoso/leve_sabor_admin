@@ -1,5 +1,4 @@
-// import useAuthStore from "../store/authStore";
-// import { getCurrentUser } from "./userService";
+import useAuthStore from "@/store/authStore";
 
 export const AuthService = {
   async login(email: string, password: string): Promise<boolean> {
@@ -15,11 +14,9 @@ export const AuthService = {
         throw new Error(errorData.error || "Falha no login");
       }
 
-      // const user = await getCurrentUser();
-      // useAuthStore.getState().login("", user);
+      useAuthStore.getState().setAuthenticated(true);
       return true;
     } catch (error: unknown) {
-      // useAuthStore.getState().logout();
       let errorMessage = "Please check your credentials and try again.";
       if (error instanceof Error) errorMessage = error.message;
       throw new Error(errorMessage);
@@ -35,7 +32,6 @@ export const AuthService = {
       if (!response.ok) {
         throw new Error("Falha ao comunicar com o servidor");
       }
-
       return true;
     } catch (error) {
       console.error("Erro durante logout:", error);
