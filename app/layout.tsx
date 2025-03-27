@@ -3,9 +3,7 @@ import { Inter } from "next/font/google";
 import clsx from "clsx";
 import { Metadata } from "next";
 import { bgColors } from "@/constants/colors";
-import Sidebar from "@/components/Sidebar";
 import HydrationZustand from "@/store/hydrationZustand";
-import AuthGuard from "@/components/AuthGuard";
 
 export const metadata: Metadata = {
   title: "LeveSabor Admin",
@@ -19,9 +17,9 @@ const inter = Inter({
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html>
       <body
@@ -31,14 +29,7 @@ export default function RootLayout({
           "flex flex-col min-h-screen"
         )}
       >
-        <HydrationZustand>
-          <AuthGuard>
-            <main className="flex h-screen">
-              <Sidebar />
-              <div className="flex-1 p-4 overflow-auto">{children}</div>
-            </main>
-          </AuthGuard>
-        </HydrationZustand>
+        <HydrationZustand>{children}</HydrationZustand>
       </body>
     </html>
   );

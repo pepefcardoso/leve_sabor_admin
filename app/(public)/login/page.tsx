@@ -36,8 +36,8 @@ export default function Page() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="w-full max-w-xl p-6 space-y-8 bg-white rounded-xl shadow-2xl">
+    <div className="min-h-screen flex items-center justify-center min-w-screen">
+      <div className="w-full max-w-xl p-12 space-y-8 bg-white rounded-xl shadow-2xl">
         <div className="text-left space-y-2">
           <h1 className={Typography.Display}>Bem-vindo!</h1>
           <p className={clsx(Typography.Body, txtColors.gray500)}>
