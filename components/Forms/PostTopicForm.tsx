@@ -5,14 +5,14 @@ import CustomTextInput from "../Inputs/CustomTextInput";
 import TextButton from "../Buttons/TextButton";
 import routes from "@/routes/routes";
 
-interface PostCategoryFormProps {
+interface PostTopicFormProps {
   initialData?: {
     name: string;
   };
   onSubmit: (formData: FormData) => Promise<void>;
 }
 
-const PostCategoryForm = ({ initialData, onSubmit }: PostCategoryFormProps) => {
+const PostTopicForm = ({ initialData, onSubmit }: PostTopicFormProps) => {
   const [name, setName] = useState(initialData?.name || "");
   const [loading, setLoading] = useState(false);
 
@@ -37,7 +37,7 @@ const PostCategoryForm = ({ initialData, onSubmit }: PostCategoryFormProps) => {
         required
       />
       <div className="flex space-x-4 justify-end">
-        <TextButton text="Voltar" href={routes.postCategories.index} />
+        <TextButton text="Voltar" href={routes.postTopics.index} />
         <FilledButton
           text={loading ? "Salvando..." : "Salvar"}
           type="submit"
@@ -48,4 +48,4 @@ const PostCategoryForm = ({ initialData, onSubmit }: PostCategoryFormProps) => {
   );
 };
 
-export default PostCategoryForm;
+export default PostTopicForm;

@@ -1,16 +1,13 @@
 "use client";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import {
-  getPostCategory,
-  updatePostCategory,
-} from "@/services/postCategoryService";
 import { Typography } from "@/constants/typography";
 import PageSkeleton from "@/components/Skeletons/PageSkeleton";
-import PostCategoryForm from "@/components/Forms/PostCategoryForm";
 import routes from "@/routes/routes";
+import PostTopicForm from "@/components/Forms/PostTopicForm";
+import { getPostTopic, updatePostTopic } from "@/services/postTopicService";
 
-const UpdatePostCategoryPage = () => {
+const UpdatePostTopicPage = () => {
   const router = useRouter();
   const params = useParams();
   const [initialData, setInitialData] = useState<{ name: string } | null>(null);
@@ -20,8 +17,8 @@ const UpdatePostCategoryPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const category = await getPostCategory(id);
-        setInitialData({ name: category.name });
+        const topic = await getPostTopic(id);
+        setInitialData({ name: topic.name });
       } catch (error) {
         console.error(error);
       } finally {
@@ -32,8 +29,8 @@ const UpdatePostCategoryPage = () => {
   }, [id]);
 
   const handleSubmit = async (formData: FormData) => {
-    await updatePostCategory(id, formData);
-    router.push(routes.postCategories.index);
+    await updatePostTopic(id, formData);
+    router.push(routes.postTopics.index);
   };
 
   if (loading) return <PageSkeleton />;
@@ -41,13 +38,13 @@ const UpdatePostCategoryPage = () => {
   return (
     <div className="min-h-screen flex items-start mt-12">
       <div className="p-6 w-full max-w-2xl mx-auto space-y-6 bg-white rounded-lg shadow-md">
-        <h1 className={Typography.Headline}>Atualizar Categoria de Post</h1>
+        <h1 className={Typography.Headline}>Atualizar Tópico de Post</h1>
         {initialData && (
-          <PostCategoryForm initialData={initialData} onSubmit={handleSubmit} />
+          <PostTopicForm initialData={initialData} onSubmit={handleSubmit} />
         )}
       </div>
     </div>
   );
 };
 
-export default UpdatePostCategoryPage;
+export default UpdatePostTopicPage;
