@@ -1,5 +1,4 @@
 'use client';
-
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Table from '@/components/Table';
@@ -10,9 +9,10 @@ import FilledButton from '@/components/Buttons/FilledButton';
 import { ConfirmationModal } from '@/components/Modals/ConfirmationModal';
 import { Typography } from '@/constants/typography';
 
-export default function PostCategoriesPage() {
+export default function Page() {
     const router = useRouter();
     const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<PostCategory[]>([]);
     const [totalItems, setTotalItems] = useState(0);
@@ -33,7 +33,7 @@ export default function PostCategoriesPage() {
                     {value as string}
                 </span>
             )
-        },
+        }
     ];
 
     const fetchCategories = useCallback(async () => {
@@ -42,18 +42,17 @@ export default function PostCategoriesPage() {
             const response = await getPostCategories({
                 pagination: {
                     page: currentPage,
-                    per_page: 10 // Usando valor fixo já que setItemsPerPage não está sendo usado
+                    per_page: itemsPerPage
                 }
             });
-
             setData(response.data);
-            setTotalItems(response.data.length);
+            setTotalItems(response.total);
         } catch (error) {
             console.error('Erro ao buscar categorias:', error);
         } finally {
             setLoading(false);
         }
-    }, [currentPage]);
+    }, [currentPage, itemsPerPage]);
 
     useEffect(() => {
         fetchCategories();
@@ -61,7 +60,6 @@ export default function PostCategoriesPage() {
 
     const handleDelete = async () => {
         if (!selectedCategory) return;
-
         try {
             await deletePostCategory(selectedCategory.id);
             await fetchCategories();
@@ -75,26 +73,26 @@ export default function PostCategoriesPage() {
         <div className="p-6">
             <div className="mb-6 flex justify-between items-center">
                 <h1 className={Typography.Headline}>Categorias de Receitas</h1>
-                <FilledButton
-                    text="+ Nova Categoria"
-                    href={routes.postCategories.create}
-                />
+                <FilledButton text="+ Nova Categoria" href={routes.postCategories.create} />
             </div>
-
             <Table<PostCategory>
                 data={data}
                 columns={columns}
                 totalItems={totalItems}
-                itemsPerPage={10}
+                itemsPerPage={itemsPerPage}
+                currentPage={currentPage}
                 loading={loading}
                 onPageChange={setCurrentPage}
+                onItemsPerPageChange={(newItemsPerPage) => {
+                    setItemsPerPage(newItemsPerPage);
+                    setCurrentPage(1);
+                }}
                 onEdit={(category) => router.push(routes.postCategories.update(category.id))}
                 onDelete={(category) => {
                     setSelectedCategory(category);
                     setShowDeleteModal(true);
                 }}
             />
-
             <ConfirmationModal
                 isOpen={showDeleteModal}
                 onClose={() => setShowDeleteModal(false)}

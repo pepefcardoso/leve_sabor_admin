@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 import { FiEdit, FiTrash2, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
 interface TableColumn<T> {
@@ -14,7 +14,9 @@ interface TableProps<T> {
     onDelete: (item: T) => void;
     totalItems: number;
     itemsPerPage?: number;
-    onPageChange?: (page: number) => void;
+    currentPage: number;
+    onPageChange: (page: number) => void;
+    onItemsPerPageChange?: (newItemsPerPage: number) => void;
     loading?: boolean;
 }
 
@@ -25,30 +27,25 @@ const Table = <T extends object>({
     onDelete,
     totalItems,
     itemsPerPage = 10,
+    currentPage,
     onPageChange,
+    onItemsPerPageChange,
     loading = false
 }: TableProps<T>) => {
-    const [currentPage, setCurrentPage] = useState(1);
     const totalPages = Math.ceil(totalItems / itemsPerPage);
-
     const handlePageChange = (newPage: number) => {
         if (newPage < 1 || newPage > totalPages) return;
-        setCurrentPage(newPage);
-        onPageChange?.(newPage);
+        onPageChange(newPage);
     };
 
     return (
         <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-            {/* Tabela */}
             <div className="overflow-x-auto">
                 <table className="w-full">
                     <thead className="bg-gray-50">
                         <tr>
                             {columns.map((column) => (
-                                <th
-                                    key={column.key as string}
-                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
+                                <th key={column.key as string} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     {column.header}
                                 </th>
                             ))}
@@ -57,50 +54,33 @@ const Table = <T extends object>({
                             </th>
                         </tr>
                     </thead>
-
                     <tbody className="bg-white divide-y divide-gray-200">
                         {loading ? (
-                            // Loading State
                             <tr>
                                 <td colSpan={columns.length + 1} className="px-6 py-4 text-center">
                                     Carregando...
                                 </td>
                             </tr>
                         ) : data.length === 0 ? (
-                            // Empty State
                             <tr>
                                 <td colSpan={columns.length + 1} className="px-6 py-4 text-center text-gray-500">
                                     Nenhum registro encontrado
                                 </td>
                             </tr>
                         ) : (
-                            // Dados
                             data.map((item, index) => (
                                 <tr key={index} className="hover:bg-gray-50 transition-colors">
                                     {columns.map((column) => (
-                                        <td
-                                            key={column.key as string}
-                                            className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                                        >
-                                            {column.render
-                                                ? column.render(item[column.key] as unknown, item)
-                                                : (item[column.key] as ReactNode)}
+                                        <td key={column.key as string} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {column.render ? column.render(item[column.key] as unknown, item) : (item[column.key] as ReactNode)}
                                         </td>
                                     ))}
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div className="flex justify-end space-x-2">
-                                            <button
-                                                onClick={() => onEdit(item)}
-                                                className="text-blue-600 hover:text-blue-900"
-                                                aria-label="Editar"
-                                            >
+                                            <button onClick={() => onEdit(item)} className="text-blue-600 hover:text-blue-900" aria-label="Editar">
                                                 <FiEdit size={18} />
                                             </button>
-                                            <button
-                                                onClick={() => onDelete(item)}
-                                                className="text-red-600 hover:text-red-900"
-                                                aria-label="Excluir"
-                                            >
+                                            <button onClick={() => onDelete(item)} className="text-red-600 hover:text-red-900" aria-label="Excluir">
                                                 <FiTrash2 size={18} />
                                             </button>
                                         </div>
@@ -111,29 +91,18 @@ const Table = <T extends object>({
                     </tbody>
                 </table>
             </div>
-
-            {/* Paginação */}
             <div className="px-4 py-3 border-t border-gray-200 sm:px-6">
                 <div className="flex-1 flex justify-between items-center sm:hidden">
-                    <button
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 1}
-                        className="btn-pagination-mobile"
-                    >
+                    <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className="btn-pagination-mobile">
                         Anterior
                     </button>
                     <span className="text-sm text-gray-700">
                         Página {currentPage} de {totalPages}
                     </span>
-                    <button
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                        className="btn-pagination-mobile"
-                    >
+                    <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} className="btn-pagination-mobile">
                         Próxima
                     </button>
                 </div>
-
                 <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                     <div>
                         <p className="text-sm text-gray-700">
@@ -145,7 +114,10 @@ const Table = <T extends object>({
                     <div className="flex space-x-2">
                         <select
                             value={itemsPerPage}
-                            onChange={() => onPageChange?.(1)}
+                            onChange={(e) => {
+                                const newSize = parseInt(e.target.value, 10);
+                                onItemsPerPageChange?.(newSize);
+                            }}
                             className="border rounded-md px-2 py-1 text-sm"
                             disabled={loading}
                         >
@@ -155,16 +127,10 @@ const Table = <T extends object>({
                                 </option>
                             ))}
                         </select>
-
                         <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-                            <button
-                                onClick={() => handlePageChange(currentPage - 1)}
-                                disabled={currentPage === 1 || loading}
-                                className="btn-pagination"
-                            >
+                            <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1 || loading} className="btn-pagination">
                                 <FiChevronLeft className="h-5 w-5" />
                             </button>
-
                             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                                 <button
                                     key={page}
@@ -175,12 +141,7 @@ const Table = <T extends object>({
                                     {page}
                                 </button>
                             ))}
-
-                            <button
-                                onClick={() => handlePageChange(currentPage + 1)}
-                                disabled={currentPage === totalPages || loading}
-                                className="btn-pagination"
-                            >
+                            <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages || loading} className="btn-pagination">
                                 <FiChevronRight className="h-5 w-5" />
                             </button>
                         </nav>
@@ -192,39 +153,3 @@ const Table = <T extends object>({
 };
 
 export default Table;
-
-// Exemplo de uso
-// interface Product {
-//     id: number;
-//     name: string;
-//     price: number;
-//     stock: number;
-//   }
-  
-//   const ProductsTable = () => {
-//     const [currentPage, setCurrentPage] = useState(1);
-//     const { data, total } = useProducts(currentPage); // Sua implementação de API
-  
-//     const columns: TableColumn<Product>[] = [
-//       { key: 'name', header: 'Nome' },
-//       { 
-//         key: 'price', 
-//         header: 'Preço',
-//         render: (value) => `R$ ${value.toFixed(2)}`
-//       },
-//       { key: 'stock', header: 'Estoque' }
-//     ];
-  
-//     return (
-//       <Table<Product>
-//         data={data}
-//         columns={columns}
-//         totalItems={total}
-//         itemsPerPage={10}
-//         onPageChange={setCurrentPage}
-//         onEdit={(product) => handleEdit(product)}
-//         onDelete={(product) => handleDelete(product)}
-//         loading={false}
-//       />
-//     );
-//   };
