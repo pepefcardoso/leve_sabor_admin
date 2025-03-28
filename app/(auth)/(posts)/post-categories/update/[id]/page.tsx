@@ -7,8 +7,8 @@ import {
 } from "@/services/postCategoryService";
 import { Typography } from "@/constants/typography";
 import PageSkeleton from "@/components/Skeletons/PageSkeleton";
-import PostCategoryForm from "@/components/Forms/PostCategoryForm";
 import routes from "@/routes/routes";
+import { NameForm } from "@/components/Forms/NameForm";
 
 const UpdatePostCategoryPage = () => {
   const router = useRouter();
@@ -43,7 +43,7 @@ const UpdatePostCategoryPage = () => {
       <div className="p-6 w-full max-w-2xl mx-auto space-y-6 bg-white rounded-lg shadow-md">
         <h1 className={Typography.Headline}>Atualizar Categoria de Post</h1>
         {initialData && (
-          <PostCategoryForm initialData={initialData} onSubmit={handleSubmit} />
+          <NameForm initialData={initialData} onSubmit={handleSubmit} />
         )}
       </div>
     </div>

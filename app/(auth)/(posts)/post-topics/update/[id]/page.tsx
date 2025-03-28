@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { Typography } from "@/constants/typography";
 import PageSkeleton from "@/components/Skeletons/PageSkeleton";
 import routes from "@/routes/routes";
-import PostTopicForm from "@/components/Forms/PostTopicForm";
 import { getPostTopic, updatePostTopic } from "@/services/postTopicService";
+import { NameForm } from "@/components/Forms/NameForm";
 
 const UpdatePostTopicPage = () => {
   const router = useRouter();
@@ -40,7 +40,7 @@ const UpdatePostTopicPage = () => {
       <div className="p-6 w-full max-w-2xl mx-auto space-y-6 bg-white rounded-lg shadow-md">
         <h1 className={Typography.Headline}>Atualizar Tópico de Post</h1>
         {initialData && (
-          <PostTopicForm initialData={initialData} onSubmit={handleSubmit} />
+          <NameForm initialData={initialData} onSubmit={handleSubmit} />
         )}
       </div>
     </div>

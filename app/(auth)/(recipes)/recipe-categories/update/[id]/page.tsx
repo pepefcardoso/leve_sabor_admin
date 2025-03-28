@@ -7,8 +7,8 @@ import {
 } from "@/services/recipeCategoryService";
 import { Typography } from "@/constants/typography";
 import PageSkeleton from "@/components/Skeletons/PageSkeleton";
-import RecipeCategoryForm from "@/components/Forms/RecipeCategoryForm";
 import routes from "@/routes/routes";
+import { NameForm } from "@/components/Forms/NameForm";
 
 const UpdateRecipeCategoryPage = () => {
   const router = useRouter();
@@ -43,7 +43,7 @@ const UpdateRecipeCategoryPage = () => {
       <div className="p-6 w-full max-w-2xl mx-auto space-y-6 bg-white rounded-lg shadow-md">
         <h1 className={Typography.Headline}>Atualizar Categoria de Receita</h1>
         {initialData && (
-          <RecipeCategoryForm
+          <NameForm
             initialData={initialData}
             onSubmit={handleSubmit}
           />
