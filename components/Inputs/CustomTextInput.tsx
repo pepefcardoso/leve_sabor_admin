@@ -20,7 +20,8 @@ interface CustomTextInputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 const CustomTextInput = ({ type = InputType.Text, disabled, label, className, ...props }: CustomTextInputProps) => {
   const baseClasses = clsx(
-    "w-full border border-gray-400 rounded-md bg-white",
+    "w-full",
+    "border border-gray-400 rounded-md bg-white",
     "px-4 py-3",
     "shadow-md",
     "disabled:opacity-50 disabled:cursor-not-allowed",
