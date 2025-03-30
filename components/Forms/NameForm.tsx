@@ -1,7 +1,10 @@
-import { useRouter } from "next/router";
+"use client";
+
+import { useRouter } from "next/navigation";
 import FilledButton from "../Buttons/FilledButton";
 import TextButton from "../Buttons/TextButton";
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, ChangeEvent } from "react";
+import CustomTextInput from "@/components/Inputs/CustomTextInput";
 
 interface NameFormProps {
   initialData?: Record<string, string>;
@@ -13,8 +16,16 @@ export const NameForm: React.FC<NameFormProps> = ({
   onSubmit,
 }) => {
   const router = useRouter();
-  const [formData] = useState<Record<string, string>>(initialData);
+  const [formData, setFormData] = useState<Record<string, string>>(initialData);
   const [loading, setLoading] = useState(false);
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,7 +41,14 @@ export const NameForm: React.FC<NameFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="flex space-x-4 justify-end">
+      <CustomTextInput
+        label="Nome"
+        name="name"
+        value={formData.name || ""}
+        onChange={handleInputChange}
+        disabled={loading}
+      />
+      <div className="flex space-x-4 justify-end mt-4">
         <TextButton text="Voltar" onClick={() => router.back()} />
         <FilledButton
           text={loading ? "Salvando..." : "Salvar"}

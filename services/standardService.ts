@@ -1,21 +1,18 @@
 import { PaginationParams, PaginationResponse } from "@/typings/pagination";
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
+import apiClient from "./apiClient";
 
 class StandardService<T> {
-  private apiClient: AxiosInstance;
   private baseUrl: string;
 
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
-    this.apiClient = axios.create({
-      baseURL: "/",
-    });
   }
 
   async getAll(pagination: PaginationParams): Promise<PaginationResponse<T>> {
     try {
       const response: AxiosResponse<PaginationResponse<T>> =
-        await this.apiClient.get(this.baseUrl, {
+        await apiClient.get(this.baseUrl, {
           params: {
             page: pagination.page,
             per_page: pagination.per_page,
@@ -31,7 +28,7 @@ class StandardService<T> {
 
   async getById(id: string): Promise<T> {
     try {
-      const response: AxiosResponse<T> = await this.apiClient.get(
+      const response: AxiosResponse<T> = await apiClient.get(
         `${this.baseUrl}/${id}`
       );
       return response.data;
@@ -44,7 +41,7 @@ class StandardService<T> {
 
   async create(data: FormData): Promise<T> {
     try {
-      const response: AxiosResponse<T> = await this.apiClient.post(
+      const response: AxiosResponse<T> = await apiClient.post(
         this.baseUrl,
         data
       );
@@ -58,7 +55,8 @@ class StandardService<T> {
 
   async update(id: string, data: FormData): Promise<T> {
     try {
-      const response: AxiosResponse<T> = await this.apiClient.put(
+      data.append("_method", "PUT");
+      const response: AxiosResponse<T> = await apiClient.post(
         `${this.baseUrl}/${id}`,
         data
       );
@@ -72,7 +70,7 @@ class StandardService<T> {
 
   async delete(id: string): Promise<void> {
     try {
-      await this.apiClient.delete(`${this.baseUrl}/${id}`);
+      await apiClient.delete(`${this.baseUrl}/${id}`);
     } catch (error) {
       throw new Error(
         `Failed to delete item with ID ${id} from ${this.baseUrl}, error: ${error}`
@@ -80,3 +78,5 @@ class StandardService<T> {
     }
   }
 }
+
+export default StandardService;
