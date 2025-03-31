@@ -1,15 +1,15 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { createRecipeCategory } from "@/services/recipeCategoryService";
 import { Typography } from "@/constants/typography";
 import routes from "@/routes/routes";
 import { NameForm } from "@/components/Forms/NameForm";
+import { recipeCategoryService } from "@/services";
 
 const Page = () => {
   const router = useRouter();
 
   const handleSubmit = async (formData: FormData) => {
-    await createRecipeCategory(formData);
+    await recipeCategoryService.create(formData);
     router.push(routes.recipeCategories.index);
   };
 

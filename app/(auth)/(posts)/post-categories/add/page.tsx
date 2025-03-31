@@ -1,15 +1,15 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { createPostCategory } from "@/services/postCategoryService";
 import { Typography } from "@/constants/typography";
 import routes from "@/routes/routes";
 import { NameForm } from "@/components/Forms/NameForm";
+import { postCategoryService } from "@/services";
 
 const Page = () => {
   const router = useRouter();
 
   const handleSubmit = async (formData: FormData) => {
-    await createPostCategory(formData);
+    await postCategoryService.create(formData);
     router.push(routes.postCategories.index);
   };
 

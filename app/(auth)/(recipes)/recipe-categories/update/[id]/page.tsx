@@ -1,14 +1,11 @@
 "use client";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import {
-  getRecipeCategory,
-  updateRecipeCategory,
-} from "@/services/recipeCategoryService";
 import { Typography } from "@/constants/typography";
 import PageSkeleton from "@/components/Skeletons/PageSkeleton";
 import routes from "@/routes/routes";
 import { NameForm } from "@/components/Forms/NameForm";
+import { recipeCategoryService } from "@/services";
 
 const UpdateRecipeCategoryPage = () => {
   const router = useRouter();
@@ -20,7 +17,7 @@ const UpdateRecipeCategoryPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const category = await getRecipeCategory(id);
+        const category = await recipeCategoryService.getById(id);
         setInitialData({ name: category.name });
       } catch (error) {
         console.error(error);
@@ -32,7 +29,7 @@ const UpdateRecipeCategoryPage = () => {
   }, [id]);
 
   const handleSubmit = async (formData: FormData) => {
-    await updateRecipeCategory(id, formData);
+    await recipeCategoryService.update(id, formData);
     router.push(routes.recipeCategories.index);
   };
 

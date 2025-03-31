@@ -5,13 +5,11 @@ import { Typography } from "@/constants/typography";
 import PageSkeleton from "@/components/Skeletons/PageSkeleton";
 import routes from "@/routes/routes";
 import { NameForm } from "@/components/Forms/NameForm";
-import StandardService from "@/services/standardService";
-import { PostCategory } from "@/typings/post";
+import { postCategoryService } from "@/services";
 
 const UpdatePostCategoryPage = () => {
   const router = useRouter();
   const params = useParams();
-  const service = new StandardService<PostCategory>("post-categories");
   const [initialData, setInitialData] = useState<{ name: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const id = params.id as string;
@@ -19,7 +17,7 @@ const UpdatePostCategoryPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const category = await service.getById(id);
+        const category = await postCategoryService.getById(id);
         setInitialData({ name: category.name });
       } catch (error) {
         console.error(error);
@@ -31,10 +29,10 @@ const UpdatePostCategoryPage = () => {
   }, [id]);
 
   const handleSubmit = async (formData: FormData) => {
-    await service.update(id, formData);
+    await postCategoryService.update(id, formData);
     router.push(routes.postCategories.index);
   };
-  
+
 
   if (loading) return <PageSkeleton />;
 

@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { Typography } from "@/constants/typography";
 import PageSkeleton from "@/components/Skeletons/PageSkeleton";
 import routes from "@/routes/routes";
-import { getPostTopic, updatePostTopic } from "@/services/postTopicService";
 import { NameForm } from "@/components/Forms/NameForm";
+import { postTopicService } from "@/services";
 
 const UpdatePostTopicPage = () => {
   const router = useRouter();
@@ -17,7 +17,7 @@ const UpdatePostTopicPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const topic = await getPostTopic(id);
+        const topic = await postTopicService.getById(id);
         setInitialData({ name: topic.name });
       } catch (error) {
         console.error(error);
@@ -29,7 +29,7 @@ const UpdatePostTopicPage = () => {
   }, [id]);
 
   const handleSubmit = async (formData: FormData) => {
-    await updatePostTopic(id, formData);
+    await postTopicService.update(id, formData);
     router.push(routes.postTopics.index);
   };
 

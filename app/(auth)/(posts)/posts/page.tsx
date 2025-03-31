@@ -8,7 +8,7 @@ import FilledButton from "@/components/Buttons/FilledButton";
 import { ConfirmationModal } from "@/components/Modals/ConfirmationModal";
 import { Typography } from "@/constants/typography";
 import { ErrorResponse } from "@/typings/pagination";
-import { deletePost, getPosts } from "@/services/postService";
+import { postService } from "@/services";
 
 export default function Page() {
   const router = useRouter();
@@ -43,16 +43,14 @@ export default function Page() {
         });
       },
     },
-  ];  
+  ];
 
   const fetchPosts = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await getPosts({
-        pagination: {
-          page: currentPage,
-          per_page: itemsPerPage,
-        },
+      const response = await postService.getAll({
+        page: currentPage,
+        per_page: itemsPerPage,
       });
       setData(response.data);
       setTotalItems(response.total);
@@ -70,7 +68,7 @@ export default function Page() {
   const handleDelete = async () => {
     if (!selectedPost) return;
     try {
-      await deletePost(selectedPost.id);
+      await postService.delete(selectedPost.id);
       await fetchPosts();
       setShowDeleteModal(false);
     } catch (error: unknown) {

@@ -3,12 +3,10 @@ import { useParams, useRouter } from "next/navigation";
 import { Typography } from "@/constants/typography";
 import routes from "@/routes/routes";
 import { PostForm } from "@/components/Forms/PostForm";
-import { getPost, updatePost } from "@/services/postService";
 import { useEffect, useState } from "react";
-import { getPostCategories } from "@/services/postCategoryService";
-import { getPostTopics } from "@/services/postTopicService";
 import { PostCategory, PostTopic } from "@/typings/post";
 import PageSkeleton from "@/components/Skeletons/PageSkeleton";
+import { postCategoryService, postService, postTopicService } from "@/services";
 
 const Page = () => {
     const router = useRouter();
@@ -30,9 +28,9 @@ const Page = () => {
         const fetchData = async () => {
             try {
                 const [catRes, topRes, postRes] = await Promise.all([
-                    getPostCategories({ pagination: { page: 1, per_page: 50 } }),
-                    getPostTopics({ pagination: { page: 1, per_page: 50 } }),
-                    getPost(params.id as string),
+                    postCategoryService.getAll({ page: 1, per_page: 50 }),
+                    postTopicService.getAll({ page: 1, per_page: 50 }),
+                    postService.getById(params.id as string),
                 ]);
                 setCategories(catRes.data);
                 setTopics(topRes.data);
@@ -57,7 +55,7 @@ const Page = () => {
     const handleSubmit = async (formData: FormData) => {
         setIsSubmitting(true);
         try {
-            await updatePost(params.id as string, formData);
+            await postService.update(params.id as string, formData);
             router.push(routes.posts.index);
         } catch (err) {
             console.error(err);

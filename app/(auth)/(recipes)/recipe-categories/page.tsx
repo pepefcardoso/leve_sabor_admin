@@ -8,10 +8,7 @@ import FilledButton from "@/components/Buttons/FilledButton";
 import { ConfirmationModal } from "@/components/Modals/ConfirmationModal";
 import { Typography } from "@/constants/typography";
 import { ErrorResponse } from "@/typings/pagination";
-import {
-  deleteRecipeCategory,
-  getRecipeCategories,
-} from "@/services/recipeCategoryService";
+import { recipeCategoryService } from "@/services";
 
 export default function Page() {
   const router = useRouter();
@@ -44,11 +41,9 @@ export default function Page() {
   const fetchCategories = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await getRecipeCategories({
-        pagination: {
-          page: currentPage,
-          per_page: itemsPerPage,
-        },
+      const response = await recipeCategoryService.getAll({
+        page: currentPage,
+        per_page: itemsPerPage,
       });
       setData(response.data);
       setTotalItems(response.total);
@@ -66,7 +61,7 @@ export default function Page() {
   const handleDelete = async () => {
     if (!selectedCategory) return;
     try {
-      await deleteRecipeCategory(selectedCategory.id);
+      await recipeCategoryService.delete(selectedCategory.id);
       await fetchCategories();
       setShowDeleteModal(false);
     } catch (error: unknown) {

@@ -4,11 +4,11 @@ import { useRouter } from 'next/navigation';
 import Table from '@/components/Table';
 import { PostCategory } from '@/typings/post';
 import routes from '@/routes/routes';
-import { deletePostCategory, getPostCategories } from '@/services/postCategoryService';
 import FilledButton from '@/components/Buttons/FilledButton';
 import { ConfirmationModal } from '@/components/Modals/ConfirmationModal';
 import { Typography } from '@/constants/typography';
 import { ErrorResponse } from '@/typings/pagination';
+import { postCategoryService } from '@/services';
 
 export default function Page() {
     const router = useRouter();
@@ -40,12 +40,12 @@ export default function Page() {
     const fetchCategories = useCallback(async () => {
         try {
             setLoading(true);
-            const response = await getPostCategories({
-                pagination: {
+            const response = await postCategoryService.getAll(
+                {
                     page: currentPage,
                     per_page: itemsPerPage
                 }
-            });
+            );
             setData(response.data);
             setTotalItems(response.total);
         } catch (error) {
@@ -62,7 +62,7 @@ export default function Page() {
     const handleDelete = async () => {
         if (!selectedCategory) return;
         try {
-            await deletePostCategory(selectedCategory.id);
+            await postCategoryService.delete(selectedCategory.id);
             await fetchCategories();
             setShowDeleteModal(false);
         } catch (error: unknown) {

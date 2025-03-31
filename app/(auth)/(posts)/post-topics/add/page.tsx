@@ -2,14 +2,14 @@
 import { useRouter } from "next/navigation";
 import { Typography } from "@/constants/typography";
 import routes from "@/routes/routes";
-import { createPostTopic } from "@/services/postTopicService";
 import { NameForm } from "@/components/Forms/NameForm";
+import { postTopicService } from "@/services";
 
 const Page = () => {
   const router = useRouter();
 
   const handleSubmit = async (formData: FormData) => {
-    await createPostTopic(formData);
+    await postTopicService.create(formData);
     router.push(routes.postTopics.index);
   };
 

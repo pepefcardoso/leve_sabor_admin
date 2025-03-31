@@ -2,6 +2,10 @@ import { PaginationParams, PaginationResponse } from "@/typings/pagination";
 import { AxiosResponse } from "axios";
 import apiClient from "./apiClient";
 
+interface StandardServiceFilters {
+  search?: string;
+}
+
 class StandardService<T> {
   private baseUrl: string;
 
@@ -9,11 +13,15 @@ class StandardService<T> {
     this.baseUrl = baseUrl;
   }
 
-  async getAll(pagination: PaginationParams): Promise<PaginationResponse<T>> {
+  async getAll(
+    pagination: PaginationParams,
+    filters?: StandardServiceFilters
+  ): Promise<PaginationResponse<T>> {
     try {
       const response: AxiosResponse<PaginationResponse<T>> =
         await apiClient.get(this.baseUrl, {
           params: {
+            ...filters,
             page: pagination.page,
             per_page: pagination.per_page,
           },

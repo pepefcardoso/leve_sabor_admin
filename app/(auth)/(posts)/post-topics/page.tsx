@@ -4,11 +4,11 @@ import { useRouter } from "next/navigation";
 import Table from "@/components/Table";
 import { PostTopic } from "@/typings/post";
 import routes from "@/routes/routes";
-import { deletePostTopic, getPostTopics } from "@/services/postTopicService";
 import FilledButton from "@/components/Buttons/FilledButton";
 import { ConfirmationModal } from "@/components/Modals/ConfirmationModal";
 import { Typography } from "@/constants/typography";
 import { ErrorResponse } from "@/typings/pagination";
+import { postTopicService } from "@/services";
 
 export default function Page() {
   const router = useRouter();
@@ -40,11 +40,9 @@ export default function Page() {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await getPostTopics({
-        pagination: {
-          page: currentPage,
-          per_page: itemsPerPage,
-        },
+      const response = await postTopicService.getAll({
+        page: currentPage,
+        per_page: itemsPerPage,
       });
       setData(response.data);
       setTotalItems(response.total);
@@ -62,7 +60,7 @@ export default function Page() {
   const handleDelete = async () => {
     if (!selectedTopic) return;
     try {
-      await deletePostTopic(selectedTopic.id);
+      await postTopicService.delete(selectedTopic.id);
       await fetchData();
       setShowDeleteModal(false);
     } catch (error: unknown) {
