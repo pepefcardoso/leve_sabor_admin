@@ -1,6 +1,11 @@
 import { Post, PostCategory, PostTopic } from "@/typings/post";
 import StandardService from "./standardService";
-import { Recipe, RecipeCategory, RecipeDiet } from "@/typings/recipe";
+import {
+  Recipe,
+  RecipeCategory,
+  RecipeDiet,
+  RecipeUnit,
+} from "@/typings/recipe";
 
 // Posts
 export const postService = new StandardService<Post>("/posts");
@@ -16,6 +21,9 @@ export const recipeDietService = new StandardService<RecipeDiet>(
 );
 export const recipeCategoryService = new StandardService<RecipeCategory>(
   "/recipe-categories"
+);
+export const recipeUnitService = new StandardService<RecipeUnit>(
+  "/recipe-units"
 );
 
 // Users
