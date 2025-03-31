@@ -6,6 +6,7 @@ import {
   RecipeDiet,
   RecipeUnit,
 } from "@/typings/recipe";
+import { UserService } from "./userService";
 
 // Posts
 export const postService = new StandardService<Post>("/posts");
@@ -27,4 +28,4 @@ export const recipeUnitService = new StandardService<RecipeUnit>(
 );
 
 // Users
-export const userService = new StandardService<Post>("/users");
+export const userService = new UserService();

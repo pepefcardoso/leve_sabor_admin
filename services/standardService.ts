@@ -7,7 +7,7 @@ interface StandardServiceFilters {
 }
 
 class StandardService<T> {
-  private baseUrl: string;
+  protected baseUrl: string;
 
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
