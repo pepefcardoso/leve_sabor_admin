@@ -7,7 +7,7 @@ import routes from "@/routes/routes";
 import { NameForm } from "@/components/Forms/NameForm";
 import { recipeCategoryService } from "@/services";
 
-const UpdateRecipeCategoryPage = () => {
+const Page = () => {
   const router = useRouter();
   const params = useParams();
   const [initialData, setInitialData] = useState<{ name: string } | null>(null);
@@ -50,4 +50,4 @@ const UpdateRecipeCategoryPage = () => {
   );
 };
 
-export default UpdateRecipeCategoryPage;
+export default Page;

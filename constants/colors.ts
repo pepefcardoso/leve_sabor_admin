@@ -25,4 +25,6 @@ export const iconColors = {
   tertiary: "#889E73",
   black: "#000000",
   white: "#FFFFFF",
+  red: "#FF0000",
+  green: "#00FF00",
 } as const;

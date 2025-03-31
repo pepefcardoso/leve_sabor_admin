@@ -2,53 +2,54 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Table from "@/components/Table";
-import { RecipeDiet } from "@/typings/recipe";
 import routes from "@/routes/routes";
 import FilledButton from "@/components/Buttons/FilledButton";
 import { ConfirmationModal } from "@/components/Modals/ConfirmationModal";
 import { Typography } from "@/constants/typography";
 import { ErrorResponse } from "@/typings/pagination";
-import { recipeDietService } from "@/services";
+import { recipeService } from "@/services";
+import { Recipe } from "@/typings/recipe";
+import { formatDate } from "@/tools/helper";
 
 export default function Page() {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<RecipeDiet[]>([]);
+  const [data, setData] = useState<Recipe[]>([]);
   const [totalItems, setTotalItems] = useState(0);
-  const [selectedDiet, setSelectedDiet] =
-    useState<RecipeDiet | null>(null);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const columns = [
     {
-      key: "name" as const,
-      header: "Nome",
+      key: "title" as const,
+      header: "Título",
       render: (value: unknown) => value as string,
     },
     {
-      key: "normalized_name" as const,
-      header: "Nome Normalizado",
-      render: (value: unknown) => (
-        <span className="font-mono bg-gray-100 px-2 py-1 rounded">
-          {value as string}
-        </span>
-      ),
+      key: "user_id" as const,
+      header: "Usuário",
+      render: (value: unknown) => value as string,
+    },
+    {
+      key: "created_at" as const,
+      header: "Data de Criação",
+      render: (value: unknown) => formatDate(value as string),
     },
   ];
 
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await recipeDietService.getAll({
+      const response = await recipeService.getAll({
         page: currentPage,
         per_page: itemsPerPage,
       });
       setData(response.data);
       setTotalItems(response.total);
     } catch (error) {
-      console.error("Erro ao buscar dietas:", error);
+      console.error("Erro ao buscar receitas:", error);
     } finally {
       setLoading(false);
     }
@@ -59,19 +60,19 @@ export default function Page() {
   }, [fetchData]);
 
   const handleDelete = async () => {
-    if (!selectedDiet) return;
+    if (!selectedRecipe) return;
     try {
-      await recipeDietService.delete(selectedDiet.id);
+      await recipeService.delete(selectedRecipe.id);
       await fetchData();
       setShowDeleteModal(false);
     } catch (error: unknown) {
       if (error instanceof Error && "response" in error) {
         console.error(
-          "Erro ao excluir dieta:",
+          "Erro ao excluir receita:",
           (error as ErrorResponse).response?.data || error.message
         );
       } else {
-        console.error("Erro desconhecido ao excluir dieta:", error);
+        console.error("Erro desconhecido ao excluir receita:", error);
       }
       setShowDeleteModal(false);
     }
@@ -80,13 +81,13 @@ export default function Page() {
   return (
     <div className="p-6">
       <div className="mb-6 flex justify-between items-center">
-        <h1 className={Typography.Headline}>Dietas de Receita</h1>
+        <h1 className={Typography.Headline}>Receitas</h1>
         <FilledButton
-          text="+ Nova Dieta"
-          href={routes.recipeDiets.create}
+          text="+ Nova Receita"
+          href={routes.recipes.create}
         />
       </div>
-      <Table<RecipeDiet>
+      <Table<Recipe>
         data={data}
         columns={columns}
         totalItems={totalItems}
@@ -98,11 +99,9 @@ export default function Page() {
           setItemsPerPage(newItemsPerPage);
           setCurrentPage(1);
         }}
-        onEdit={(diet) =>
-          router.push(routes.recipeDiets.update(diet.id))
-        }
-        onDelete={(diet) => {
-          setSelectedDiet(diet);
+        onEdit={(recipe) => router.push(routes.recipes.update(recipe.id))}
+        onDelete={(recipe) => {
+          setSelectedRecipe(recipe);
           setShowDeleteModal(true);
         }}
       />
@@ -111,7 +110,7 @@ export default function Page() {
         onClose={() => setShowDeleteModal(false)}
         onConfirm={handleDelete}
         title="Confirmar exclusão"
-        message={`Tem certeza que deseja excluir a dieta "${selectedDiet?.name}"?`}
+        message={`Tem certeza que deseja excluir a receita "${selectedRecipe?.title}"?`}
       />
     </div>
   );

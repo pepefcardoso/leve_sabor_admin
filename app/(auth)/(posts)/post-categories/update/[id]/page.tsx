@@ -7,7 +7,7 @@ import routes from "@/routes/routes";
 import { NameForm } from "@/components/Forms/NameForm";
 import { postCategoryService } from "@/services";
 
-const UpdatePostCategoryPage = () => {
+const Page = () => {
   const router = useRouter();
   const params = useParams();
   const [initialData, setInitialData] = useState<{ name: string } | null>(null);
@@ -48,4 +48,4 @@ const UpdatePostCategoryPage = () => {
   );
 };
 
-export default UpdatePostCategoryPage;
+export default Page;

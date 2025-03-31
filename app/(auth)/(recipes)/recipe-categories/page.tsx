@@ -80,7 +80,7 @@ export default function Page() {
   return (
     <div className="p-6">
       <div className="mb-6 flex justify-between items-center">
-        <h1 className={Typography.Headline}>Categorias de Recipe</h1>
+        <h1 className={Typography.Headline}>Categorias de Receita</h1>
         <FilledButton
           text="+ Nova Categoria"
           href={routes.recipeCategories.create}
