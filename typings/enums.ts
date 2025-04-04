@@ -5,9 +5,9 @@ export enum RolesEnum {
 }
 
 export const roleDisplayNames = {
-  [RolesEnum.ADMIN]: "Admin",
-  [RolesEnum.INTERNAL]: "Internal",
-  [RolesEnum.USER]: "User",
+  [RolesEnum.ADMIN]: "Administrador",
+  [RolesEnum.INTERNAL]: "Interno",
+  [RolesEnum.USER]: "Cliente",
 };
 
 export enum RecipeDifficultyEnum {
@@ -17,3 +17,17 @@ export enum RecipeDifficultyEnum {
   "Difícil" = 4,
   "Muito Difícil" = 5,
 }
+
+export enum CustomerContactStatusEnum {
+  RECEIVED = 1,
+  IN_PROGRESS = 2,
+  COMPLETED = 3,
+  CANCELED = 4,
+}
+
+export const CustomerContactDisplayNames = {
+  [CustomerContactStatusEnum.RECEIVED]: "Recebido",
+  [CustomerContactStatusEnum.IN_PROGRESS]: "Em Andamento",
+  [CustomerContactStatusEnum.COMPLETED]: "Concluído",
+  [CustomerContactStatusEnum.CANCELED]: "Cancelado",
+};

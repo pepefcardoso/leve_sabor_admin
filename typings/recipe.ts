@@ -16,6 +16,9 @@ export interface Recipe {
   steps?: RecipeStep[];
   diets?: RecipeDiet[];
   image?: Image;
+  ratings_count: number;
+  ratings_average: number;
+  comments?: Comment[];
   created_at: string;
   updated_at: string;
 }

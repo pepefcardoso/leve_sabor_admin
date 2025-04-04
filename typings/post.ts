@@ -12,6 +12,9 @@ export interface Post {
   user?: User;
   topics?: PostTopic[];
   image?: Image;
+  ratings_count: number;
+  ratings_average: number;
+  comments?: Comment[];
   created_at: string;
   updated_at: string;
 }

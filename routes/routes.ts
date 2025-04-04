@@ -50,6 +50,16 @@ const routes = {
     create: "/newsletter-customers/add",
     update: (id: string) => `/newsletter-customers/update/${id}`,
   },
+  ratings: {
+    index: "/ratings",
+    create: "/ratings/add",
+    update: (id: string) => `/ratings/update/${id}`,
+  },
+  comments: {
+    index: "/comments",
+    create: "/comments/add",
+    update: (id: string) => `/comments/update/${id}`,
+  },
 };
 
 export default routes;

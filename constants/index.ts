@@ -1,5 +1,5 @@
 import routes from "@/routes/routes";
-import { FaAddressBook, FaBalanceScale, FaEnvelopeOpenText, FaFileAlt, FaFolderOpen, FaTags, FaThList, FaUsers } from "react-icons/fa";
+import { FaAddressBook, FaBalanceScale, FaComment, FaEnvelopeOpenText, FaFileAlt, FaFolderOpen, FaStar, FaTags, FaThList, FaUsers } from "react-icons/fa";
 import { GiCook, GiFruitBowl } from "react-icons/gi";
 
 export const NAVIGATION_LINKS = [
@@ -57,5 +57,17 @@ export const NAVIGATION_LINKS = [
     label: "Clientes de Newsletter",
     href: routes.newsletterCustomers.index,
     icon: FaEnvelopeOpenText,
+  },
+  {
+    key: "ratings",
+    label: "Avaliações",
+    href: routes.ratings.index,
+    icon: FaStar,
+  },
+  {
+    key: "comments",
+    label: "Comentários",
+    href: routes.comments.index,
+    icon: FaComment
   },
 ];
