@@ -23,18 +23,18 @@ const routes = {
   },
   recipeCategories: {
     index: "/recipe-categories",
-    create: "/recipes-categories/add",
-    update: (id: string) => `/recipes-categories/update/${id}`,
+    create: "/recipe-categories/add",
+    update: (id: string) => `/recipe-categories/update/${id}`,
   },
   recipeDiets: {
     index: "/recipe-diets",
-    create: "/recipes-diets/add",
-    update: (id: string) => `/recipes-diets/update/${id}`,
+    create: "/recipe-diets/add",
+    update: (id: string) => `/recipe-diets/update/${id}`,
   },
   recipeUnits: {
     index: "/recipe-units",
-    create: "/recipes-units/add",
-    update: (id: string) => `/recipes-units/update/${id}`,
+    create: "/recipe-units/add",
+    update: (id: string) => `/recipe-units/update/${id}`,
   },
   users: {
     index: "/users",

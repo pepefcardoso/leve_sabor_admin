@@ -199,7 +199,7 @@ export const RecipeForm: React.FC<RecipeFormProps> = ({ initialData, categories,
       </div>
 
       <div className="flex flex-col items-center">
-        <div className="relative w-200 h-200">
+        <div className="relative w-[200px] h-[200px] overflow-hidden">
           <Image
             src={previewImage || sanitizeImageUrl(formData.image)}
             alt="recipe_image"

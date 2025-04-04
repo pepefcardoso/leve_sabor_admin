@@ -7,6 +7,8 @@ import TextButton from "../Buttons/TextButton";
 import routes from "@/routes/routes";
 import IconButton from "../Buttons/IconButton";
 import { sanitizeImageUrl } from "@/tools/helper";
+import { roleDisplayNames, RolesEnum } from "@/typings/enums";
+import CustomInputSelect from "../Inputs/CustomSelectInput";
 
 interface FormDataValues {
   name: string;
@@ -14,21 +16,24 @@ interface FormDataValues {
   phone: string;
   email: string;
   image?: string;
+  role?: RolesEnum;
 };
 
 interface UserFormProps {
   initialData?: FormDataValues;
   isSubmitting: boolean;
   onSubmit: (data: FormData) => Promise<void>;
+  onRoleChange: (role: RolesEnum) => Promise<void>;
 }
 
-export const UserForm: React.FC<UserFormProps> = ({ initialData, isSubmitting, onSubmit }) => {
+export const UserForm: React.FC<UserFormProps> = ({ initialData, isSubmitting, onSubmit, onRoleChange }) => {
   const [formData, setFormData] = useState<FormDataValues>({
     name: initialData?.name || "",
     birthday: initialData?.birthday || "",
     phone: initialData?.phone || "",
     email: initialData?.email || "",
     image: initialData?.image,
+    role: initialData?.role || RolesEnum.USER,
   });
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(formData.image || null);
@@ -57,6 +62,15 @@ export const UserForm: React.FC<UserFormProps> = ({ initialData, isSubmitting, o
     data.append("email", formData.email);
     if (selectedImage) data.append("image", selectedImage);
     await onSubmit(data);
+  };
+
+  const handleRoleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newRole = Number(e.target.value) as RolesEnum;
+    setFormData(prev => ({ ...prev, role: newRole }));
+
+    if (onRoleChange) {
+      await onRoleChange(newRole);
+    }
   };
 
   return (
@@ -104,9 +118,7 @@ export const UserForm: React.FC<UserFormProps> = ({ initialData, isSubmitting, o
           type={InputType.Email}
           name="email"
           value={formData.email}
-          onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
-          placeholder="Email"
-          disabled={isSubmitting}
+          disabled
         />
 
         <CustomTextInput
@@ -128,6 +140,22 @@ export const UserForm: React.FC<UserFormProps> = ({ initialData, isSubmitting, o
           disabled={isSubmitting}
           type={InputType.Tel}
         />
+
+        {initialData && (
+          <CustomInputSelect
+            label="Função"
+            options={Object.values(RolesEnum)
+              .filter(value => typeof value === 'number')
+              .map((role) => ({
+                value: role.toString(),
+                label: roleDisplayNames[role as RolesEnum]
+              }))}
+            value={formData.role?.toString() || ''}
+            onChange={handleRoleChange}
+            disabled={isSubmitting}
+            className="mt-1"
+          />
+        )}
       </div>
 
       <div className="flex space-x-4 justify-end mt-4">

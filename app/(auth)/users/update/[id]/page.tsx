@@ -6,6 +6,7 @@ import PageSkeleton from "@/components/Skeletons/PageSkeleton";
 import routes from "@/routes/routes";
 import { userService } from "@/services";
 import { UserForm } from "@/components/Forms/UserForm";
+import { RolesEnum } from "@/typings/enums";
 
 const Page = () => {
   const router = useRouter();
@@ -19,6 +20,7 @@ const Page = () => {
     phone: "",
     birthday: "",
     image_url: "",
+    role: RolesEnum.USER,
   });
 
   useEffect(() => {
@@ -31,6 +33,7 @@ const Page = () => {
           phone: user.phone,
           birthday: user.birthday,
           image_url: user.image?.url ?? "",
+          role: user.role,
         });
       } catch (error) {
         console.error(error);
@@ -53,6 +56,17 @@ const Page = () => {
     }
   };
 
+  const handleRoleChange = async (role: RolesEnum) => {
+    setIsSubmitting(true);
+    try {
+      await userService.updateRole(id, role);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   if (loading) return <PageSkeleton />;
 
   return (
@@ -63,6 +77,7 @@ const Page = () => {
           <UserForm
             initialData={initialData}
             onSubmit={handleSubmit}
+            onRoleChange={handleRoleChange}
             isSubmitting={isSubmitting}
           />
         )}
