@@ -1,33 +1,20 @@
 import { NextResponse } from "next/server";
+import { authenticateUser } from "@/services/authLogic";
 
 export async function POST(request: Request) {
   const { email, password } = await request.json();
+  const apiUrl = process.env.LARAVEL_API_URL!;
+  const result = await authenticateUser(email, password, apiUrl);
 
-  const laravelResponse = await fetch(process.env.LARAVEL_API_URL + "/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
-
-  if (!laravelResponse.ok) {
-    const errorData = await laravelResponse.json();
+  if (!result.success) {
     return NextResponse.json(
-      { error: errorData.message || "Falha no login" },
+      { error: result.error },
       { status: 401 }
     );
   }
 
-  const data = await laravelResponse.json();
-  const token = data.token;
-  if (!token) {
-    return NextResponse.json(
-      { error: "Token de autenticação não foi reconhecido" },
-      { status: 401 }
-    );
-  }
-
-  const response = NextResponse.json({ success: true });
-  response.cookies.set("leve_sabor_admin_auth_token", token, {
+  const response = NextResponse.json({ success: true, user: result.user });
+  response.cookies.set("leve_sabor_admin_auth_token", result.token, {
     httpOnly: true,
     secure: true, // process.env.NODE_ENV === 'production',
     sameSite: "strict",

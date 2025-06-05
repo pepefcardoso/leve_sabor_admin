@@ -16,9 +16,10 @@ export const enum InputType {
 interface CustomTextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   type?: InputType;
   label?: string;
+  error?: string; // Nova prop para mensagem de erro
 }
 
-const CustomTextInput = ({ type = InputType.Text, disabled, label, className, ...props }: CustomTextInputProps) => {
+const CustomTextInput = ({ type = InputType.Text, disabled, label, className, error, ...props }: CustomTextInputProps) => {
   const baseClasses = clsx(
     "w-full",
     "border border-gray-400 rounded-md bg-white",
@@ -28,13 +29,19 @@ const CustomTextInput = ({ type = InputType.Text, disabled, label, className, ..
     "transition-all duration-200",
     "outline-none",
     "focus:border-tertiary focus:ring-2 focus:ring-tertiary",
+    { "border-red-500 focus:border-red-500 focus:ring-red-500": error }, // Estilo de erro
     className
   );
 
+  // Adicionar um ID para o input para o aria-describedby
+  const inputId = props.id || `custom-text-input-${props.name || Math.random().toString(36).substring(2, 9)}`;
+  const errorId = error ? `${inputId}-error` : undefined;
+
   return (
     <div className="space-y-2 w-full">
-      {label && <label className={clsx(Typography.Subtitle, "block")}>{label}</label>}
-      <input {...props} type={type} disabled={disabled} className={baseClasses.trim()} />
+      {label && <label htmlFor={inputId} className={clsx(Typography.Subtitle, "block")}>{label}</label>}
+      <input {...props} id={inputId} type={type} disabled={disabled} className={baseClasses.trim()} aria-describedby={errorId} aria-invalid={!!error} />
+      {error && <p id={errorId} className="text-red-600 text-sm mt-1">{error}</p>}
     </div>
   );
 };

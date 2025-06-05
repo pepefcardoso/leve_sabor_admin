@@ -1,0 +1,4 @@
+# Backup of .babelrc before removal for Turbopack compatibility
+{
+  "presets": ["next/babel"]
+}

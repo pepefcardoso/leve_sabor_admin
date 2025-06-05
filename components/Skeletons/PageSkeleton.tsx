@@ -2,7 +2,10 @@ import React from "react";
 
 const PageSkeleton = () => {
   return (
-    <div className="container mx-auto px-6 py-8 max-w-4xl animate-pulse">
+    <div
+      className="container mx-auto px-6 py-8 max-w-4xl animate-pulse"
+      data-testid="page-skeleton"
+    >
       <div className="h-6 w-24 bg-gray-300 rounded mb-4"></div>
 
       <div className="h-8 bg-gray-300 rounded w-3/4 mb-4"></div>

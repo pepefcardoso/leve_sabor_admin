@@ -24,9 +24,10 @@ interface UserFormProps {
   isSubmitting: boolean;
   onSubmit: (data: FormData) => Promise<void>;
   onRoleChange: (role: RolesEnum) => Promise<void>;
+  errors?: Partial<Record<keyof FormDataValues, string[]>>;
 }
 
-export const UserForm: React.FC<UserFormProps> = ({ initialData, isSubmitting, onSubmit, onRoleChange }) => {
+export const UserForm: React.FC<UserFormProps> = ({ initialData, isSubmitting, onSubmit, onRoleChange, errors }) => {
   const [formData, setFormData] = useState<FormDataValues>({
     name: initialData?.name || "",
     birthday: initialData?.birthday || "",
@@ -111,6 +112,7 @@ export const UserForm: React.FC<UserFormProps> = ({ initialData, isSubmitting, o
           onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
           placeholder="Nome"
           disabled={isSubmitting}
+          error={errors?.name?.[0]}
         />
 
         <CustomTextInput
@@ -119,6 +121,7 @@ export const UserForm: React.FC<UserFormProps> = ({ initialData, isSubmitting, o
           name="email"
           value={formData.email}
           disabled
+          error={errors?.email?.[0]}
         />
 
         <CustomTextInput
@@ -129,6 +132,7 @@ export const UserForm: React.FC<UserFormProps> = ({ initialData, isSubmitting, o
           onChange={(e) => setFormData((prev) => ({ ...prev, birthday: e.target.value }))}
           placeholder="Data de Nascimento"
           disabled={isSubmitting}
+          error={errors?.birthday?.[0]}
         />
 
         <CustomTextInput
@@ -139,6 +143,7 @@ export const UserForm: React.FC<UserFormProps> = ({ initialData, isSubmitting, o
           placeholder="Telefone"
           disabled={isSubmitting}
           type={InputType.Tel}
+          error={errors?.phone?.[0]}
         />
 
         {initialData && (
@@ -154,6 +159,7 @@ export const UserForm: React.FC<UserFormProps> = ({ initialData, isSubmitting, o
             onChange={handleRoleChange}
             disabled={isSubmitting}
             className="mt-1"
+            error={errors?.role?.[0]}
           />
         )}
       </div>

@@ -9,11 +9,13 @@ import CustomTextInput from "@/components/Inputs/CustomTextInput";
 interface NameFormProps {
   initialData?: Record<string, string>;
   onSubmit: (formData: FormData) => Promise<void>;
+  errors?: Partial<Record<string, string[]>>;
 }
 
 export const NameForm: React.FC<NameFormProps> = ({
   initialData = {},
   onSubmit,
+  errors = {},
 }) => {
   const router = useRouter();
   const [formData, setFormData] = useState<Record<string, string>>(initialData);
@@ -47,6 +49,7 @@ export const NameForm: React.FC<NameFormProps> = ({
         value={formData.name || ""}
         onChange={handleInputChange}
         disabled={loading}
+        error={errors?.name?.[0]}
       />
       <div className="flex space-x-4 justify-end mt-4">
         <TextButton text="Voltar" onClick={() => router.back()} />

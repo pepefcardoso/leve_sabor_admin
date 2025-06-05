@@ -16,6 +16,9 @@ interface IconButtonProps {
     size?: number;
     type?: "button" | "submit" | "reset";
     className?: string;
+    ariaLabel?: string; // NOVO: obrigatório para acessibilidade
+    tabIndex?: number;
+    dataTestId?: string;
 }
 
 const IconButton: FC<IconButtonProps> = ({
@@ -27,6 +30,9 @@ const IconButton: FC<IconButtonProps> = ({
     size = 20,
     type = "button",
     className = "",
+    ariaLabel,
+    tabIndex,
+    dataTestId,
 }) => {
     const baseClasses = clsx(
         "inline-flex items-center justify-center p-3 transform",
@@ -36,19 +42,20 @@ const IconButton: FC<IconButtonProps> = ({
             : "rounded-lg hover:hover:bg-gray-100",
         className
     );
-
-
+    if (!ariaLabel) {
+        // Garante acessibilidade para botões de ícone
+        console.warn('IconButton: ariaLabel é obrigatório para acessibilidade.');
+    }
     if (href && !disabled) {
         return (
-            <Link href={href} onClick={onClick} className={baseClasses} aria-disabled={disabled} role="button">
-                <Icon size={size} color={color} />
+            <Link href={href} onClick={onClick} className={baseClasses} aria-disabled={disabled} role="button" aria-label={ariaLabel} tabIndex={tabIndex} data-testid={dataTestId}>
+                <Icon size={size} color={color} aria-hidden={!!ariaLabel ? undefined : true} />
             </Link>
         );
     }
-
     return (
-        <button onClick={onClick} type={type} disabled={disabled} className={baseClasses}>
-            <Icon size={size} color={color} />
+        <button onClick={onClick} type={type} disabled={disabled} className={baseClasses} aria-label={ariaLabel} tabIndex={tabIndex} data-testid={dataTestId}>
+            <Icon size={size} color={color} aria-hidden={!!ariaLabel ? undefined : true} />
         </button>
     );
 };

@@ -18,6 +18,8 @@ interface CustomCheckboxInputProps {
     disabled?: boolean;
     className?: string;
     label?: string;
+    error?: string;
+    id?: string;
 }
 
 const CustomCheckboxInput: React.FC<CustomCheckboxInputProps> = ({
@@ -28,6 +30,8 @@ const CustomCheckboxInput: React.FC<CustomCheckboxInputProps> = ({
     disabled = false,
     className = "",
     label,
+    error,
+    id,
 }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -78,6 +82,9 @@ const CustomCheckboxInput: React.FC<CustomCheckboxInputProps> = ({
         { "opacity-50 cursor-not-allowed": disabled }
     );
 
+    const groupId = id || `custom-checkbox-group-${Math.random().toString(36).substring(2, 9)}`;
+    const errorId = error ? `${groupId}-error` : undefined;
+
     return (
         <div className="space-y-3 w-full relative" ref={containerRef}> {/* Changed from space-y-2 to space-y-3 */}
             {label && <label className={clsx(Typography.Subtitle, "block mb-1")}>{label}</label>} {/* Added mb-1 */}
@@ -125,6 +132,7 @@ const CustomCheckboxInput: React.FC<CustomCheckboxInputProps> = ({
                     })}
                 </div>
             )}
+            {error && <p id={errorId} className="text-red-600 text-sm mt-1">{error}</p>}
         </div>
     );
 };

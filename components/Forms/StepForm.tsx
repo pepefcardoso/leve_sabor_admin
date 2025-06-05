@@ -11,11 +11,15 @@ import { FiTrash } from "react-icons/fi";
 interface StepFormProps {
   onStepsChange: (steps: RecipeStep[]) => void;
   initialSteps?: RecipeStep[];
+  errors?: Array<{
+    description?: { _errors?: string[] };
+  }>;
 }
 
 export const StepForm = ({
   onStepsChange,
   initialSteps = [],
+  errors = [],
 }: StepFormProps) => {
   const [steps, setSteps] = useState<RecipeStep[]>(initialSteps);
 
@@ -64,6 +68,7 @@ export const StepForm = ({
             value={step.description}
             onChange={(e) => handleChange(index, e.target.value)}
             placeholder="Descrição do passo"
+            error={errors?.[index]?.description?._errors?.[0]}
           />
         </div>
       ))}

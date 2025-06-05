@@ -11,11 +11,17 @@ import { recipeUnitService } from "@/services";
 interface IngredientFormProps {
   onIngredientsChange: (ingredients: RecipeIngredient[]) => void;
   initialIngredients?: RecipeIngredient[];
+  errors?: Array<{
+    name?: { _errors?: string[] };
+    quantity?: { _errors?: string[] };
+    unit_id?: { _errors?: string[] };
+  }>;
 }
 
 export const IngredientForm = ({
   onIngredientsChange,
   initialIngredients = [],
+  errors = [],
 }: IngredientFormProps) => {
   const [units, setUnits] = useState<RecipeUnit[]>([]);
   const [ingredients, setIngredients] =
@@ -72,6 +78,7 @@ export const IngredientForm = ({
             value={ingredient.name}
             onChange={(e) => handleChange(index, "name", e.target.value)}
             disabled={isLoading}
+            error={errors?.[index]?.name?._errors?.[0]}
           />
 
           <CustomTextInput
@@ -83,6 +90,7 @@ export const IngredientForm = ({
             }
             disabled={isLoading}
             min={0}
+            error={errors?.[index]?.quantity?._errors?.[0]}
           />
 
           <CustomInputSelect
@@ -94,6 +102,7 @@ export const IngredientForm = ({
             onChange={(e) => handleChange(index, "unit_id", e.target.value)}
             placeholder="Selecione"
             disabled={isLoading}
+            error={errors?.[index]?.unit_id?._errors?.[0]}
           />
         </div>
       ))}

@@ -21,6 +21,8 @@ interface CustomSelectInputProps {
   className?: string;
   required?: boolean;
   label?: string;
+  error?: string;
+  id?: string;
 }
 
 const CustomInputSelect: React.FC<CustomSelectInputProps> = ({
@@ -32,6 +34,10 @@ const CustomInputSelect: React.FC<CustomSelectInputProps> = ({
   isLoading = false,
   className = "",
   label,
+  error,
+  id,
+  name,
+  ...props
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -58,6 +64,21 @@ const CustomInputSelect: React.FC<CustomSelectInputProps> = ({
     setIsDropdownOpen(false);
   };
 
+  const selectId = id || name || `custom-select-${Math.random().toString(36).substring(2, 9)}`;
+  const errorId = error ? `${selectId}-error` : undefined;
+  const baseClasses = clsx(
+    "w-full",
+    "border border-gray-400 rounded-md",
+    "px-4 py-3",
+    "bg-white shadow-md",
+    "transition-all duration-150 ease-in-out",
+    "outline-none",
+    "focus:border-tertiary focus:ring-2 focus:ring-tertiary",
+    { "border-red-500 focus:border-red-500 focus:ring-red-500": error },
+    { "opacity-50 cursor-not-allowed": disabled || isLoading },
+    className
+  );
+
   const triggerClasses = clsx(
     "w-full",
     "border border-gray-400 rounded-md",
@@ -81,8 +102,8 @@ const CustomInputSelect: React.FC<CustomSelectInputProps> = ({
   );
 
   return (
-    <div className="space-y-2 w-full relative" ref={containerRef}>
-      {label && <label className={clsx(Typography.Subtitle, "block")}>{label}</label>}
+    <div className="space-y-2 w-full" ref={containerRef}>
+      {label && <label htmlFor={selectId} className={clsx(Typography.Subtitle, "block")}>{label}</label>}
 
       <div
         className={triggerClasses}
@@ -118,6 +139,23 @@ const CustomInputSelect: React.FC<CustomSelectInputProps> = ({
           ))}
         </div>
       )}
+      <select
+        id={selectId}
+        name={name}
+        value={value}
+        onChange={onChange}
+        disabled={disabled || isLoading}
+        className={baseClasses}
+        aria-describedby={errorId}
+        aria-invalid={!!error}
+        {...props}
+      >
+        <option value="" disabled>{placeholder}</option>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>{option.label}</option>
+        ))}
+      </select>
+      {error && <p id={errorId} className="text-red-600 text-sm mt-1">{error}</p>}
     </div>
   );
 };

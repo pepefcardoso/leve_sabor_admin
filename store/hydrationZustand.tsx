@@ -7,12 +7,17 @@ interface HydrationZustandProps {
 
 const HydrationZustand = ({ children }: HydrationZustandProps) => {
   const [isHydrated, setIsHydrated] = useState(false);
-
   useEffect(() => {
     setIsHydrated(true);
   }, []);
-
-  return isHydrated ? <>{children}</> : null;
+  if (!isHydrated) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+      </div>
+    );
+  }
+  return <>{children}</>;
 };
 
 export default HydrationZustand;

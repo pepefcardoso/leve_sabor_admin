@@ -28,9 +28,10 @@ interface PostFormProps {
   topics: PostTopic[];
   isSubmitting: boolean;
   onSubmit: (data: FormData) => Promise<void>;
+  errors?: Partial<Record<keyof FormDataValues, string[]>>;
 }
 
-export const PostForm: React.FC<PostFormProps> = ({ initialData, categories, topics, isSubmitting, onSubmit }) => {
+export const PostForm: React.FC<PostFormProps> = ({ initialData, categories, topics, isSubmitting, onSubmit, errors }) => {
   const [formData, setFormData] = useState<FormDataValues>({
     title: initialData?.title || "",
     summary: initialData?.summary || "",
@@ -87,6 +88,7 @@ export const PostForm: React.FC<PostFormProps> = ({ initialData, categories, top
         required
         maxLength={100}
         disabled={isSubmitting}
+        error={errors?.title?.[0]}
       />
 
       <CustomTextAreaInput
@@ -96,6 +98,7 @@ export const PostForm: React.FC<PostFormProps> = ({ initialData, categories, top
         required
         maxLength={255}
         disabled={isSubmitting}
+        error={errors?.summary?.[0]}
       />
 
       <CustomTextAreaInput
@@ -105,36 +108,26 @@ export const PostForm: React.FC<PostFormProps> = ({ initialData, categories, top
         required
         rows={8}
         disabled={isSubmitting}
+        error={errors?.content?.[0]}
       />
 
       <CustomInputSelect
         label="Categoria"
-        options={categories.map((category) => ({
-          value: category.id,
-          label: category.name,
-        }))}
         value={formData.category_id}
-        onChange={(e) =>
-          setFormData((prev) => ({
-            ...prev,
-            category_id: e.target.value,
-          }))
-        }
-        placeholder="Selecione uma categoria"
-        disabled={isSubmitting}
+        onChange={(e) => setFormData((prev) => ({ ...prev, category_id: e.target.value }))}
+        options={categories.map((cat) => ({ value: cat.id, label: cat.name }))}
         required
+        disabled={isSubmitting}
+        error={errors?.category_id?.[0]}
       />
 
       <CustomCheckboxInput
-        options={topics.map((topic) => ({
-          id: String(topic.id),
-          label: topic.name,
-        }))}
+        options={topics.map((topic) => ({ id: topic.id, label: topic.name }))}
         selected={formData.topics}
         onChange={handleTopicChange}
         disabled={isSubmitting}
         placeholder="Selecione os tópicos"
-        label="Tópicos"
+        error={errors?.topics?.[0]}
       />
 
       <div className="h-full flex flex-col gap-8">

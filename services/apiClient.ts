@@ -1,5 +1,6 @@
 import axios from "axios";
-import { AuthService } from "./authService";
+import { getToken, setToken, clearToken } from './tokenCache';
+import useAuthStore from '@/store/authStore';
 
 const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api",
@@ -8,51 +9,47 @@ const apiClient = axios.create({
   },
 });
 
-const getToken = async (): Promise<string | null> => {
-  try {
-    const response = await fetch("/api/auth/getToken");
-    const data = await response.json();
-    return data.token;
-  } catch (error) {
-    console.error("Erro ao buscar token:", error);
-    return null;
-  }
+const fetchToken = async () => {
+  const token = getToken();
+  if (token) return token;
+  const response = await fetch('/api/auth/getToken');
+  const data = await response.json();
+  setToken(data.token);
+  return data.token;
 };
 
 apiClient.interceptors.request.use(async (config) => {
-  const token = await getToken();
-
+  const token = await fetchToken();
   if (config.data instanceof FormData) {
     config.headers["Content-Type"] = "multipart/form-data";
   } else {
     config.headers["Content-Type"] = "application/json";
   }
-
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-
   return config;
 });
 
 apiClient.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     const originalRequest = error.config;
     const isUnauthorized = error.response?.status === 401;
     const isLoginRequest = originalRequest?.url?.includes("/login");
-
     if (isUnauthorized && !isLoginRequest && !originalRequest._retry) {
       originalRequest._retry = true;
-      AuthService.logout();
-      window.location.href = "/login";
+      clearToken();
+      // Limpa estado de autenticação
+      if (typeof window !== 'undefined') {
+        useAuthStore.getState().clearAuth();
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login';
+        }
+      }
     }
-
-    return Promise.reject({
-      message: error.response?.data?.message || "An error occurred",
-      status: error.response?.status,
-      data: error.response?.data,
-    });
+    // Preserva informações do erro original
+    return Promise.reject(error);
   }
 );
 

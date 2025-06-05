@@ -11,14 +11,21 @@ export const AuthService = {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Falha no login");
+        throw new Error(errorData.error || "Credenciais inválidas");
       }
 
+      const data = await response.json();
       useAuthStore.getState().setAuthenticated(true);
+      if (data.user) {
+        useAuthStore.getState().setUser(data.user);
+      }
+      useAuthStore.getState().setSessionExpired(false);
       return true;
     } catch (error: unknown) {
-      let errorMessage = "Please check your credentials and try again.";
+      let errorMessage = "Erro desconhecido. Tente novamente.";
       if (error instanceof Error) errorMessage = error.message;
+      if (errorMessage.includes("network"))
+        errorMessage = "Erro de rede. Verifique sua conexão.";
       throw new Error(errorMessage);
     }
   },
@@ -28,14 +35,16 @@ export const AuthService = {
       const response = await fetch("/api/auth/logout", {
         method: "POST",
       });
-
+      useAuthStore.getState().clearAuth();
       if (!response.ok) {
         throw new Error("Falha ao comunicar com o servidor");
       }
       return true;
     } catch (error) {
-      console.error("Erro durante logout:", error);
-      throw new Error("Não foi possível completar o logout. Tente novamente.");
+      useAuthStore.getState().clearAuth();
+      let errorMessage = "Não foi possível completar o logout. Tente novamente.";
+      if (error instanceof Error) errorMessage = error.message;
+      throw new Error(errorMessage);
     }
   },
 };
